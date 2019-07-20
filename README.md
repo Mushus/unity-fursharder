@@ -2,7 +2,7 @@
 
 Simple Fur Sharder for Unity or VRChat
 
-<div style="text-align:center">
+<p align="center">
   <img src="https://mushus.github.io/unity-fursharder/preview.gif">
 </div>
 
