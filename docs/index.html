@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>unity-fursharder</title>
+  </head>
+  <body>
+    <h1>unity-fursharder</h1>
+    <article id="furdepthmap">
+      <h2>texture generator</h2>
+      <div>
+        <canvas
+          id="furdepthmap-canvas"
+          :width="canvasSize"
+          :height="canvasSize"
+          style="border: 1px solid #ccc; max-width: 256px;"
+        ></canvas>
+      </div>
+      <div>
+        <select v-model="canvasSize" :disabled="drawing">
+          <option v-for="v in options" :key="v" :value="v"> {{ v }} px </option>
+        </select>
+        : size<br />
+        <input
+          type="range"
+          min="0.05"
+          max="20"
+          step="0.05"
+          v-model="lineWeigth"
+          :disabled="drawing"
+        />
+        <input type="number" v-model="lineWeigth" :disabled="drawing" />
+        : weight<br />
+        <input
+          type="range"
+          min="0.05"
+          max="1"
+          step="0.05"
+          v-model="density"
+          :disabled="drawing"
+        />
+        <input type="number" v-model="density" :disabled="drawing" />
+        : density<br />
+        <input
+          type="range"
+          min="1"
+          max="255"
+          step="1"
+          v-model="length"
+          :disabled="drawing"
+        />
+        <input type="number" v-model="length" :disabled="drawing" />
+        : length<br />
+        <button type="button" @click="draw()" v-if="!drawing">
+          draw
+        </button>
+        <button type="button" @click="cansel()" v-else>
+          cansel
+        </button>
+        <progress :max="progress[1]" :value="progress[0]" v-if="drawing">
+          {{ (progress[0] / progress[1]) * 100 }}%
+        </progress>
+      </div>
+    </article>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script>
+      new Vue({
+        el: '#furdepthmap',
+        data: {
+          options: [128, 256, 512, 1024, 2048, 4096],
+          canvasSize: 128,
+          drawing: false,
+          progress: 1,
+          lineWeigth: 2,
+          density: 0.1,
+          length: 20
+        },
+        methods: {
+          draw() {
+            const canvas = document.querySelector('#furdepthmap-canvas');
+            const ctx = canvas.getContext('2d');
+
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.fillRect(0, 0, this.canvasSize, this.canvasSize);
+            ctx.globalCompositeOperation = 'lighter';
+
+            const maxLength = this.length;
+            const lineWeigth = Number(this.lineWeigth);
+            const numByOneProc = 1000;
+            const canvasArea = this.canvasSize * this.canvasSize;
+            const density = Number(this.density);
+            const procNum = ((density * canvasArea) / numByOneProc) | 0;
+
+            this.drawing = true;
+            this.progress = [0, procNum];
+
+            return (async () => {
+              for (let i = 0; i < procNum; i++) {
+                if (!this.drawing) return;
+                await new Promise(resolve => {
+                  setTimeout(() => {
+                    for (let k = 0; k < numByOneProc; k++) {
+                      const length = (Math.random() * maxLength) | 0;
+                      const gravityDir = Math.random() * 2 * Math.PI;
+                      const gravityPower = Math.random() * 0.1;
+                      const gravityForce = [
+                        Math.cos(gravityDir) * gravityPower,
+                        Math.sin(gravityDir) * gravityPower
+                      ];
+
+                      const pos = [
+                        this.canvasSize * Math.random(),
+                        this.canvasSize * Math.random()
+                      ];
+                      const ga = [0, 0];
+
+                      for (let m = 0; m < length; m++) {
+                        const [bx, by] = pos;
+                        ga[0] += gravityForce[0];
+                        ga[1] += gravityForce[1];
+                        pos[0] += ga[0];
+                        pos[1] += ga[1];
+                        const [ax, ay] = pos;
+                        const color8bit = (((m + 1) / length) * 255) | 0;
+                        const color = color8bit.toString(16);
+                        ctx.strokeStyle = `#${color}${color}${color}`;
+                        ctx.lineWidth = (1 - m / length) * lineWeigth;
+                        ctx.beginPath();
+                        ctx.moveTo(bx, by);
+                        ctx.lineTo(ax, ay);
+                        ctx.stroke();
+                      }
+                    }
+                    this.progress.splice(0, 1, this.progress[0] + 1);
+                    resolve();
+                  });
+                });
+              }
+            })().finally(() => {
+              this.drawing = false;
+            });
+          },
+          cansel() {
+            this.drawing = false;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

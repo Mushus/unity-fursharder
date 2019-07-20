@@ -14,7 +14,16 @@ trim_trailing_whitespace = true
 trim_trailing_whitespace = false
 indent_size = 2
 
+# Markdown
+[*.html]
+trim_trailing_whitespace = true
+indent_size = 2
+
 # Sharder
-[*.cginc,*.sharder]
-trim_trailing_whitespace = false
+[*.cginc]
+trim_trailing_whitespace = true
+indent_size = 4
+
+[*.sharder]
+trim_trailing_whitespace = true
 indent_size = 4
