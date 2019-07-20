@@ -1,6 +1,10 @@
 # unity-furshader
 
-シンプルなファーシェーダーです
+Simple Fur Sharder for Unity or VRChat
+
+<div style="text-align:center">
+  ![Preview](/docs/preview.gif)
+</div>
 
 ## 使い方
 
