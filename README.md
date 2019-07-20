@@ -5,7 +5,7 @@
   <img src="https://mushus.github.io/unity-fursharder/preview.gif">
 </div>
 
-## 使い方
+## Parameters
 
 - UVTexture UV テクスチャ
 - FurDepthTexture ファーの深度マップ
@@ -16,3 +16,7 @@
 - FurSharde 毛の影
 - RimLightMap リムライト
 - RimLightQuantity リムライトの強さ
+
+## Texture
+
+FurDepthTexture generator is [here](https://mushus.github.io/unity-fursharder/)
