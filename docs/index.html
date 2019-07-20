@@ -19,6 +19,7 @@
         ></canvas>
       </div>
       <div>
+        <button type="button" @click="download()">download</button>
         <select v-model="canvasSize" :disabled="drawing">
           <option v-for="v in options" :key="v" :value="v"> {{ v }} px </option>
         </select>
@@ -35,9 +36,9 @@
         : weight<br />
         <input
           type="range"
-          min="0.05"
+          min="0.001"
           max="1"
-          step="0.05"
+          step="0.001"
           v-model="density"
           :disabled="drawing"
         />
@@ -53,15 +54,53 @@
         />
         <input type="number" v-model="length" :disabled="drawing" />
         : length<br />
+        <input
+          type="range"
+          min="-0.5"
+          max="0.5"
+          step="0.001"
+          v-model="gravity.x"
+          :disabled="drawing"
+        />
+        <input type="number" v-model="gravity.x" :disabled="drawing" />
+        : gravity.x<br />
+        <input
+          type="range"
+          min="-0.5"
+          max="0.5"
+          step="0.001"
+          v-model="gravity.y"
+          :disabled="drawing"
+        />
+        <input type="number" v-model="gravity.y" :disabled="drawing" />
+        : gravity.y<br />
+        <input
+          type="range"
+          min="0"
+          max="0.5"
+          step="0.001"
+          v-model="randomness"
+          :disabled="drawing"
+        />
+        <input type="number" v-model="randomness" :disabled="drawing" />
+        : randomness<br />
         <button type="button" @click="draw()" v-if="!drawing">
           draw
         </button>
         <button type="button" @click="cansel()" v-else>
           cansel
         </button>
-        <progress :max="progress[1]" :value="progress[0]" v-if="drawing">
-          {{ (progress[0] / progress[1]) * 100 }}%
+        <progress
+          :max="progress.total"
+          :value="progress.success"
+          v-if="drawing"
+        >
+          {{ (progress.success / progress.total) * 100 }}%
         </progress>
+      </div>
+      <h3>how to use</h3>
+      <div>
+        小さいサイズで試した後に大きいサイズで試すと良い
       </div>
     </article>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
@@ -72,29 +111,36 @@
           options: [128, 256, 512, 1024, 2048, 4096],
           canvasSize: 128,
           drawing: false,
-          progress: 1,
-          lineWeigth: 2,
+          progress: { success: 1, total: 1 },
+          lineWeigth: 1,
           density: 0.1,
-          length: 20
+          length: 20,
+          gravity: { x: 0, y: 0 },
+          randomness: 0.1,
+          canvasId: '#furdepthmap-canvas'
         },
         methods: {
           draw() {
-            const canvas = document.querySelector('#furdepthmap-canvas');
+            const canvas = document.querySelector(this.canvasId);
             const ctx = canvas.getContext('2d');
 
             ctx.globalCompositeOperation = 'source-over';
             ctx.fillRect(0, 0, this.canvasSize, this.canvasSize);
             ctx.globalCompositeOperation = 'lighter';
 
+            const canvasSize = this.canvasSize;
             const maxLength = this.length;
             const lineWeigth = Number(this.lineWeigth);
             const numByOneProc = 1000;
             const canvasArea = this.canvasSize * this.canvasSize;
             const density = Number(this.density);
             const procNum = ((density * canvasArea) / numByOneProc) | 0;
-
+            const gravityX = Number(this.gravity.x);
+            const gravityY = Number(this.gravity.y);
+            const randomness = Number(this.randomness);
             this.drawing = true;
-            this.progress = [0, procNum];
+            this.progress.total = procNum;
+            this.progress.success = 0;
 
             return (async () => {
               for (let i = 0; i < procNum; i++) {
@@ -102,38 +148,67 @@
                 await new Promise(resolve => {
                   setTimeout(() => {
                     for (let k = 0; k < numByOneProc; k++) {
-                      const length = (Math.random() * maxLength) | 0;
+                      const length =
+                        (Math.random() * maxLength * 0.5 + maxLength * 0.5) | 0;
                       const gravityDir = Math.random() * 2 * Math.PI;
-                      const gravityPower = Math.random() * 0.1;
-                      const gravityForce = [
-                        Math.cos(gravityDir) * gravityPower,
-                        Math.sin(gravityDir) * gravityPower
-                      ];
+                      const gravityPower = Math.random() * randomness;
+                      const gravityForce = {
+                        x: Math.cos(gravityDir) * gravityPower,
+                        y: Math.sin(gravityDir) * gravityPower
+                      };
 
-                      const pos = [
-                        this.canvasSize * Math.random(),
-                        this.canvasSize * Math.random()
-                      ];
-                      const ga = [0, 0];
+                      const pos = {
+                        x: canvasSize * Math.random(),
+                        y: canvasSize * Math.random()
+                      };
+                      const ga = { x: 0, y: 0 };
 
                       for (let m = 0; m < length; m++) {
-                        const [bx, by] = pos;
-                        ga[0] += gravityForce[0];
-                        ga[1] += gravityForce[1];
-                        pos[0] += ga[0];
-                        pos[1] += ga[1];
-                        const [ax, ay] = pos;
+                        if (pos.x < 0) pos.x += canvasSize;
+                        if (pos.y < 0) pos.y += canvasSize;
+                        if (pos.x > canvasSize) pos.x -= canvasSize;
+                        if (pos.y > canvasSize) pos.y -= canvasSize;
+
+                        const { x: bx, y: by } = pos;
+                        ga.x += gravityForce.x + gravityX;
+                        ga.y += gravityForce.y + gravityY;
+                        pos.x += ga.x;
+                        pos.y += ga.y;
+                        const { x: ax, y: ay } = pos;
+
                         const color8bit = (((m + 1) / length) * 255) | 0;
-                        const color = color8bit.toString(16);
+                        let color = color8bit.toString(16);
+                        if (color.length === 1) {
+                          color = `0${color}`;
+                        }
+
                         ctx.strokeStyle = `#${color}${color}${color}`;
                         ctx.lineWidth = (1 - m / length) * lineWeigth;
+
                         ctx.beginPath();
                         ctx.moveTo(bx, by);
                         ctx.lineTo(ax, ay);
+                        // はみ出し処理
+                        if (ax < 0) {
+                          ctx.moveTo(bx + canvasSize, by);
+                          ctx.lineTo(ax + canvasSize, ay);
+                        }
+                        if (ay < 0) {
+                          ctx.moveTo(bx, by + canvasSize);
+                          ctx.lineTo(ax, ay + canvasSize);
+                        }
+                        if (ax > canvasSize) {
+                          ctx.moveTo(bx - canvasSize, by);
+                          ctx.lineTo(ax - canvasSize, ay);
+                        }
+                        if (ay > canvasSize) {
+                          ctx.moveTo(bx, by - canvasSize);
+                          ctx.lineTo(ax, ay - canvasSize);
+                        }
                         ctx.stroke();
                       }
                     }
-                    this.progress.splice(0, 1, this.progress[0] + 1);
+                    this.progress.success += 1;
                     resolve();
                   });
                 });
@@ -144,6 +219,13 @@
           },
           cansel() {
             this.drawing = false;
+          },
+          download() {
+            const canvas = document.querySelector(this.canvasId);
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = 'fur_texture.png';
+            link.click();
           }
         }
       });
