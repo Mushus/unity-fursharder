@@ -3,7 +3,7 @@
 Simple Fur Sharder for Unity or VRChat
 
 <div style="text-align:center">
-  ![Preview](/docs/preview.gif)
+  <img src="https://mushus.github.io/unity-fursharder/preview.gif">
 </div>
 
 ## 使い方
