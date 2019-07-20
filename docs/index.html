@@ -105,6 +105,23 @@
     </article>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script>
+      if (!HTMLCanvasElement.prototype.toBlob) {
+        Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
+          value: function(callback, type, quality) {
+            var binStr = atob(this.toDataURL(type, quality).split(',')[1]),
+              len = binStr.length,
+              arr = new Uint8Array(len);
+
+            for (var i = 0; i < len; i++) {
+              arr[i] = binStr.charCodeAt(i);
+            }
+
+            callback(new Blob([arr], { type: type || 'image/png' }));
+          }
+        });
+      }
+    </script>
+    <script>
       new Vue({
         el: '#furdepthmap',
         data: {
@@ -222,10 +239,13 @@
           },
           download() {
             const canvas = document.querySelector(this.canvasId);
-            const link = document.createElement('a');
-            link.href = canvas.toDataURL('image/png');
-            link.download = 'fur_texture.png';
-            link.click();
+            canvas.toBlob(blob => {
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = 'fur_texture.png';
+              link.click();
+            });
           }
         }
       });
