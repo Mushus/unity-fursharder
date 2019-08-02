@@ -1,0 +1,528 @@
+﻿Shader "Custom/fur" {
+
+    Properties {
+        _MainTex ("UVTexture", 2D) = "white" {}
+        _SubTex  ("FurDepthTexture", 2D) = "white" {}
+        _Gravity ("Gravity", Vector) = (0.0, -0.75, 0.0, 0.0)
+        _Spacing ("Spacing", Range (0, 1)) = 0.1
+        _WindStrength ("WindStrength", Range (0, 200)) = 100
+        _Turbulence ("Turbulence", Range(0, 10)) = 1
+        _FurShadow ("FurSharde", Range (0, 5)) = 0.5
+        _RimLightMap ("RimLightMap", 2D) = "black" {}
+        _RimLightQuantity ("RimLightQuantity", Range (0, 1)) = 1
+    }
+
+    Category {
+        // 全体にZWriteを適用しないとファーの部分だけ透けて見えるため
+        ZWrite On
+        Tags {
+            "Queue"        = "Transparent"
+            "LightMode" = "ForwardBase"
+        }
+        Blend SrcAlpha OneMinusSrcAlpha
+        Alphatest Greater [_Cutoff]
+
+        SubShader {
+            Pass {
+
+                // ZWrite On
+                Blend Off
+
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 0
+                #include "FurHelper.cginc"
+
+                ENDCG
+
+                SetTexture [_MainTex] {
+                    combine texture + primary
+                }
+            }
+
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 0 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 1 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 2 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 3 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 4 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 5 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 6 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 7 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 8 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 9 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 10 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 11 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 12 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 13 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 14 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 15 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 16 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 17 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 18 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 19 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 20 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 21 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 22 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 23 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 24 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 25 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 26 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 27 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 28 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 29 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 30 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 31 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 32 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 33 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 34 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 35 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 36 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 37 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 38 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 39 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 40 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 41 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 42 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 43 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 44 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 45 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 46 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 47 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 48 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 49 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 50 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 51 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 52 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 53 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 54 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 55 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 56 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 57 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 58 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+            Pass {
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #define FUR_OFFSET 1.0f * 59 / 60
+                #include "FurHelper.cginc"
+                ENDCG
+            }
+        }
+
+        Fallback "VertexLit", 1
+    }
+}
